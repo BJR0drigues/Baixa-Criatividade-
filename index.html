@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo 2D - Baixa Criatividade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Jogo 2D Web - Demonstração</h1>
+        <div class="game-info">
+            <p>Use as setas ← → para mover o jogador</p>
+            <p>Pressione ESPAÇO para pular</p>
+            <p>Pontuação: <span id="score">0</span></p>
+        </div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <button id="startBtn">Iniciar Jogo</button>
+            <button id="pauseBtn">Pausar</button>
+            <button id="resetBtn">Reiniciar</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
