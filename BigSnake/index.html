@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Snake: Fast Food Fever</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-container">
+                <span>PONTUAÇÃO:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="level-container">
+                <span>FASE:</span>
+                <span id="level">1</span>
+            </div>
+        </div>
+        
+        <canvas id="game-canvas" width="480" height="480"></canvas>
+        
+        <div class="game-controls">
+            <p>Use as setas do teclado para controlar a cobra</p>
+        </div>
+        
+        <div id="start-screen" class="game-overlay">
+            <h1>Rainbow Snake<br>Fast Food Fever</h1>
+            <p>Coma fast foods e cresça!</p>
+            <p>Evite comidas estragadas e obstáculos!</p>
+            <button id="start-button">INICIAR JOGO</button>
+        </div>
+
+        <div id="game-over" class="game-overlay hidden">
+            <h2>GAME OVER</h2>
+            <p>Sua pontuação: <span id="final-score">0</span></p>
+            <div id="high-scores">
+                <h3>RECORDES</h3>
+                <ol id="high-scores-list"></ol>
+            </div>
+            <button id="restart-button">JOGAR NOVAMENTE</button>
+        </div>
+
+        <div id="level-up" class="game-overlay hidden">
+            <h2>FASE <span id="new-level">2</span>!</h2>
+            <p>Parabéns! Você alcançou uma nova fase!</p>
+            <p id="level-message">Cuidado com as comidas estragadas!</p>
+            <button id="continue-button">CONTINUAR</button>
+        </div>
+    </div>
+
+    <script src="js/snake.js"></script>
+    <script src="js/food.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
