@@ -7,11 +7,25 @@ let gameInterval;
 let score = 0;
 let gameSpeed = 100; // Velocidade inicial do jogo (ms)
 let gameRunning = false;
+let currentLevel = 0;
+let lastCheckedScore = 0; // Para verificar avanço de nível
 
 document.addEventListener('DOMContentLoaded', function() {
-    const startButton = document.querySelector('.start-button') || document.getElementById('start-button');
+    console.log("DOM carregado");
     
+    // Verifica se o canvas existe
+    gameCanvas = document.getElementById('gameCanvas');
+    if (gameCanvas) {
+        console.log("Canvas encontrado");
+        // Pegue o contexto aqui, mas não use ainda
+        ctx = gameCanvas.getContext('2d');
+    } else {
+        console.error("Canvas não encontrado no DOM!");
+    }
+    
+    const startButton = document.querySelector('.start-button') || document.getElementById('start-button');
     if (startButton) {
+        console.log("Botão de início encontrado");
         startButton.addEventListener('click', function() {
             console.log('Botão clicado!');
             startGame();
@@ -24,6 +38,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function startGame() {
     console.log('Função de iniciar jogo chamada');
     
+    // Verificar se o canvas foi encontrado
+    if (!gameCanvas || !ctx) {
+        console.error("Canvas ou contexto não encontrado!");
+        return;
+    }
+    
     // Esconda o menu e mostre o jogo
     const gameMenu = document.querySelector('.game-menu') || document.getElementById('game-menu');
     const gameContainer = document.querySelector('.game-container') || document.getElementById('game-container');
@@ -33,21 +53,11 @@ function startGame() {
     
     console.log('Jogo iniciado!');
     
-    // Inicialize o jogo - aqui estava faltando a função
-    initializeGame(); 
+    // Inicialize o jogo
+    initializeGame();
 }
 
-// Adicione esta função que está faltando
 function initializeGame() {
-    // Obtenha o canvas e o contexto
-    gameCanvas = document.getElementById('gameCanvas');
-    if (!gameCanvas) {
-        console.error("Canvas não encontrado!");
-        return;
-    }
-    
-    ctx = gameCanvas.getContext('2d');
-    
     // Inicialize a cobra
     snake = new Snake();
     
@@ -55,10 +65,24 @@ function initializeGame() {
     food = new Food();
     food.generateNewPosition();
     
-    // Inicie a função de jogo em um intervalo
-    if (gameInterval) clearInterval(gameInterval);
+    // Reiniciar a pontuação e nível
+    score = 0;
+    currentLevel = 0;
+    lastCheckedScore = 0;
+    updateScore();
+    
+    // Aplicar o nível inicial
+    const gameObj = {
+        gameInterval: gameInterval,
+        gameSpeed: gameSpeed,
+        gameLoop: gameLoop
+    };
+    levels[0].apply(gameObj);
+    gameInterval = gameObj.gameInterval;
+    gameSpeed = gameObj.gameSpeed;
+    
+    // Inicie o jogo
     gameRunning = true;
-    gameInterval = setInterval(gameLoop, gameSpeed);
     
     // Adicione os controles de teclado
     document.addEventListener('keydown', handleKeyPress);
@@ -75,9 +99,13 @@ function gameLoop() {
     
     // Verifique colisão com a comida
     if (snake.checkFoodCollision(food)) {
+        snake.grow();
         food.generateNewPosition();
         score += 10;
         updateScore();
+        
+        // Verifique se deve avançar de nível
+        checkLevelProgress();
     }
     
     // Verifique colisão com as paredes ou com si mesma
@@ -89,6 +117,50 @@ function gameLoop() {
     // Desenhe os elementos
     snake.draw(ctx);
     food.draw(ctx);
+    
+    // Efeito pulsante na comida
+    const pulseEffect = Math.sin(Date.now() / 200) * 0.2 + 0.8;
+    food.pulseFactor = pulseEffect;
+}
+
+function checkLevelProgress() {
+    // Verifica se a pontuação atual corresponde a um novo nível
+    const appropriateLevel = getLevelByScore(score);
+    
+    // Se encontrou um nível diferente do atual
+    if (appropriateLevel.requiredScore !== lastCheckedScore) {
+        lastCheckedScore = appropriateLevel.requiredScore;
+        
+        // Aplica o novo nível
+        const gameObj = {
+            gameInterval: gameInterval,
+            gameSpeed: gameSpeed,
+            gameLoop: gameLoop
+        };
+        appropriateLevel.apply(gameObj);
+        gameInterval = gameObj.gameInterval;
+        gameSpeed = gameObj.gameSpeed;
+        
+        // Exibe mensagem de novo nível
+        showLevelUpMessage(appropriateLevel.name);
+    }
+}
+
+function showLevelUpMessage(levelName) {
+    // Cria um elemento temporário para mostrar a mensagem de nível
+    const levelUpMsg = document.createElement('div');
+    levelUpMsg.className = 'level-up-message';
+    levelUpMsg.textContent = `NÍVEL ${levelName}!`;
+    
+    const gameContainer = document.querySelector('.game-container');
+    if (gameContainer) {
+        gameContainer.appendChild(levelUpMsg);
+        
+        // Remove a mensagem após 2 segundos
+        setTimeout(() => {
+            gameContainer.removeChild(levelUpMsg);
+        }, 2000);
+    }
 }
 
 function handleKeyPress(event) {
@@ -127,8 +199,4 @@ function gameOver() {
     
     if (gameMenu) gameMenu.style.display = 'block';
     if (gameContainer) gameContainer.style.display = 'none';
-    
-    // Resetar jogo
-    score = 0;
-    updateScore();
 }

@@ -23,6 +23,19 @@
             height: 400px;
             border: 2px solid #0F0;
             display: none; /* Inicialmente oculto */
+            transition: box-shadow 0.3s;
+        }
+        
+        /* Efeito para mudança de nível */
+        .game-container.level-up {
+            box-shadow: 0 0 20px #FF00FF, 0 0 40px #00FFFF;
+            animation: pulse 1s ease;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
         
         #gameCanvas {
@@ -35,6 +48,31 @@
             top: 10px;
             left: 10px;
             font-size: 16px;
+        }
+        
+        .level-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+        }
+        
+        .level-up-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: #FF00FF;
+            text-shadow: 0 0 10px #00FFFF, 0 0 20px #FF00FF;
+            animation: zoomIn 1s ease;
+            pointer-events: none;
+        }
+        
+        @keyframes zoomIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
         }
         
         .game-menu {
@@ -78,6 +116,8 @@
         <h1 class="game-title">Rainbow Snake<br>Fast Food Fever</h1>
         <p class="game-instructions">Coma fast foods e cresça!</p>
         <p class="game-instructions">Evite comidas estragadas e obstáculos!</p>
+        <p class="game-instructions">A cobra muda de cor ao crescer!</p>
+        <p class="game-instructions">Avance de nível e aumente a velocidade!</p>
         <button class="start-button" id="start-button">Iniciar Jogo</button>
         <p class="game-instructions">Use as setas do teclado para controlar a cobra</p>
     </div>
@@ -85,6 +125,7 @@
     <div class="game-container" id="game-container">
         <canvas id="gameCanvas" width="600" height="400"></canvas>
         <div class="score-container">Pontuação: <span id="score">0</span></div>
+        <div class="level-container">Nível: <span id="level">Novato</span></div>
     </div>
     
     <!-- Carregar os scripts na ordem correta -->

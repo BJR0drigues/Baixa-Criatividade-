@@ -5,6 +5,16 @@ class Snake {
         this.nextDirection = "right";
         this.gridSize = 20; // Tamanho de cada segmento da cobra
         this.expandOnNextUpdate = false;
+        this.colors = [
+            "#00FF00", // Verde inicial
+            "#00FFFF", // Ciano
+            "#FF00FF", // Magenta
+            "#FFFF00", // Amarelo
+            "#FF5500", // Laranja
+            "#FF0000"  // Vermelho
+        ];
+        this.headColor = this.colors[0];
+        this.bodyColor = "#32CD32"; // Verde mais escuro para o corpo inicial
     }
 
     update() {
@@ -39,6 +49,27 @@ class Snake {
         } else {
             this.expandOnNextUpdate = false;
         }
+        
+        // Atualiza a cor com base no tamanho da cobra
+        this.updateColor();
+    }
+    
+    updateColor() {
+        // Calcula o índice de cor com base no tamanho da cobra
+        const colorIndex = Math.min(
+            Math.floor((this.segments.length - 1) / 5), 
+            this.colors.length - 1
+        );
+        
+        // Atualiza as cores
+        this.headColor = this.colors[colorIndex];
+        
+        // Cria uma cor de corpo ligeiramente mais escura que a cabeça
+        const headColorValue = parseInt(this.headColor.substring(1), 16);
+        const r = ((headColorValue >> 16) & 255) * 0.8;
+        const g = ((headColorValue >> 8) & 255) * 0.8;
+        const b = (headColorValue & 255) * 0.8;
+        this.bodyColor = `rgb(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)})`;
     }
     
     draw(ctx) {
@@ -51,9 +82,15 @@ class Snake {
         this.segments.forEach((segment, index) => {
             // Cabeça com cor diferente
             if (index === 0) {
-                ctx.fillStyle = "#00FF00"; // Verde para a cabeça
+                ctx.fillStyle = this.headColor;
             } else {
-                ctx.fillStyle = "#32CD32"; // Verde mais escuro para o corpo
+                ctx.fillStyle = this.bodyColor;
+                
+                // Efeito de "arco-íris" - cada segmento tem uma cor ligeiramente diferente
+                if (index > 2) {
+                    const hue = (Date.now() / 50 + index * 10) % 360;
+                    ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+                }
             }
             
             ctx.fillRect(
@@ -100,5 +137,10 @@ class Snake {
         }
         
         return false;
+    }
+    
+    // Retorna o tamanho da cobra
+    getSize() {
+        return this.segments.length;
     }
 }
