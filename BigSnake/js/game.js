@@ -1,3 +1,33 @@
+
+// Adicione isto no início do arquivo (caso não exista)
+document.addEventListener('DOMContentLoaded', function() {
+    const startButton = document.querySelector('.start-button') || document.getElementById('start-button');
+    
+    if (startButton) {
+        startButton.addEventListener('click', function() {
+            console.log('Botão clicado!'); // Para debug
+            startGame();
+        });
+    } else {
+        console.error('Botão de iniciar não encontrado!');
+    }
+});
+
+function startGame() {
+    // Adicione no início da função que inicia o jogo
+    console.log('Função de iniciar jogo chamada');
+    // Código existente para iniciar o jogo
+    console.log('Jogo iniciado!');
+    // Esconda o menu e mostre o jogo
+    const gameMenu = document.querySelector('.game-menu') || document.getElementById('game-menu');
+    const gameContainer = document.querySelector('.game-container') || document.getElementById('game-container');
+    
+    if (gameMenu) gameMenu.style.display = 'none';
+    if (gameContainer) gameContainer.style.display = 'block';
+    
+    // Inicialize o jogo
+    initializeGame(); // Esta função deve existir no seu código
+}
 class Game {
     constructor() {
         // Elementos do DOM
